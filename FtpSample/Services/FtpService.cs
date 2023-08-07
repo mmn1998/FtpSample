@@ -9,31 +9,45 @@ namespace FtpSample.Services;
 
 internal class FtpService
 {
-    public SftpClient? ConnectToSftp(string host, string username, string password, string remoteDirectory)
+    public SftpClient? ConnectToSftp(string host, string username, string password)
     {
-        using (var sftp = new SftpClient(host, username, password))
+        try
         {
-            sftp.Connect();
-            return sftp;
-
+            using (var sftp = new SftpClient(host, username, password))
+            {
+                sftp.Connect();
+                return sftp;
+            }
+        }
+        catch (Exception e)
+        {
+            throw;
         }
     }
 
     public void DownloadFile(SftpClient sftpClient, string remoteDirectory, string localDirectory, string fileName, string fileExtension)
     {
-        var files = sftpClient.ListDirectory(remoteDirectory);
-
-        foreach (var file in files)
+        try
         {
-            string remoteFileName = file.Name;
-            if (remoteFileName == fileName)
-            {
+            var files = sftpClient.ListDirectory(remoteDirectory);
 
-                using (Stream file1 = File.OpenWrite(localDirectory + fileName + fileExtension))
+            foreach (var file in files)
+            {
+                string remoteFileName = file.Name;
+                if (remoteFileName == fileName)
                 {
-                    sftpClient.DownloadFile(remoteDirectory + fileName + fileExtension, file1);
+
+                    using (Stream file1 = File.OpenWrite(localDirectory + fileName + fileExtension))
+                    {
+                        sftpClient.DownloadFile(remoteDirectory + fileName + fileExtension, file1);
+                    }
                 }
             }
+        }
+        catch (Exception e)
+        {
+
+            throw;
         }
 
     }
@@ -45,7 +59,6 @@ internal class FtpService
         }
         catch (Exception e)
         {
-
             throw;
         }
     }
