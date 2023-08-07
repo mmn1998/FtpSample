@@ -46,7 +46,6 @@ internal class FtpService
         }
         catch (Exception e)
         {
-
             throw;
         }
 
@@ -61,5 +60,9 @@ internal class FtpService
         {
             throw;
         }
+    }
+    public void UploadFile(SftpClient sftpClient, FileStream fileStream, string remoteDirectory)
+    {
+        sftpClient.UploadFile(fileStream, remoteDirectory);
     }
 }
