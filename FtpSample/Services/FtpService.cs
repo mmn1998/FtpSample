@@ -72,4 +72,30 @@ internal class FtpService
             throw;
         }
     }
+    public byte[]? GetFileBytes(SftpClient sftpClient, string remoteDirectory, string localDirectory, string fileName, string fileExtension)
+    {
+        byte[]? content = null;
+        try
+        {
+            var files = sftpClient.ListDirectory(remoteDirectory);
+
+            foreach (var file in files)
+            {
+                string remoteFileName = file.Name;
+                if (remoteFileName == fileName)
+                {
+
+                    using (Stream file1 = File.OpenWrite(localDirectory + fileName + fileExtension))
+                    {
+                        content = sftpClient.ReadAllBytes(remoteDirectory + fileName + fileExtension);
+                    }
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
+        return content;
+    }
 }
